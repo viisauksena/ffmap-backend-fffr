@@ -155,6 +155,7 @@ def main(params):
         rrd = RRD(os.path.join(script_directory, 'nodedb'),
                   os.path.join(params['dest_dir'], 'nodes'))
         rrd.update_database(nodedb['nodes'])
+    if params['img']:
         rrd.update_images()
 
 
@@ -177,6 +178,9 @@ if __name__ == '__main__':
     parser.add_argument('-p', '--prune', metavar='DAYS', type=int,
                         help='forget nodes offline for at least DAYS')
     parser.add_argument('--with-rrd', dest='rrd', action='store_true',
+                        default=False,
+                        help='make rrd Data (no img) ')
+    parser.add_argument('--with-img', dest='img', action='store_true',
                         default=False,
                         help='enable the rendering of RRD graphs (cpu '
                              'intensive)')
