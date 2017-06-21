@@ -59,7 +59,7 @@ def main(params):
     # read nodedb state from node.json
     try:
         with open(nodes_fn, 'r') as nodedb_handle:
-            nodedb = json.load(nodedb_handle)
+            nodedb = json.loads(nodedb_handle.read())
     except IOError:
         nodedb = {'nodes': dict()}
 
@@ -88,9 +88,15 @@ def main(params):
             nodes.import_nodeinfo(nodedb['nodes'], nodeinfo,
                                   now, assume_online=False)
 
+#    for aliasstat in params['aliasstat']:
+#        with open(aliasstat, 'r') as s:
+#            statistics = json.load(s)
+#            nodes.import_statistics(nodedb['nodes'], statistics)
+
     nodes.reset_statistics(nodedb['nodes'])
     for alfred in alfred_instances:
         nodes.import_statistics(nodedb['nodes'], alfred.statistics())
+
 
     # acquire gwl and visdata for each batman instance
     mesh_info = []
@@ -163,8 +169,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-a', '--aliases',
-                        help='Read aliases from FILE',
+                        help='Read aliases nodeinfo from FILE',
                         nargs='+', default=[], metavar='FILE')
+#    parser.add_argument('-s', '--aliasstat',
+#                        help='add alias-statistics from FILE',
+#                        nargs='+', default=[], metavar='FILE')
     parser.add_argument('-m', '--mesh',
                         default=['bat0'], nargs='+',
                         help='Use given batman-adv mesh interface(s) (defaults'
@@ -187,3 +196,4 @@ if __name__ == '__main__':
 
     options = vars(parser.parse_args())
     main(options)
+
